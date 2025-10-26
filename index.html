@@ -1,13 +1,149 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>vegas</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LV VEGAS | Moda Rebelde</title> <!-- Título de la pestaña --><!-- Carga Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Definición de la Paleta de Colores y Fuentes (Variables CSS) */
+        :root {
+            --color-negro-carbon: #1c3cc9;     /* Fondo principal */
+            --color-gris-asfalto: #333333;     /* Tarjetas */
+            --color-plata-metal: #B0B0B0;      /* Detalles */
+            --color-rojo-sangre: #E60000;      /* Acento principal */
+            --color-morado-electrico: #8A2BE2; /* Hover/Links */
+            --color-rosa-suave: #FFC0CB;       /* Toques femeninos */
+        }
+
+        body {
+            background-color: var(--color-negro-carbon);
+            color: #e0d2d2;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Estilos específicos para un look más agresivo/motero */
+        .header-title {
+            font-family: 'Oswald', sans-serif;
+            text-shadow: 4px 4px 0 var(--color-rojo-sangre);
+            letter-spacing: 2px;
+        }
+
+        .product-card {
+            border: 2px solid var(--color-plata-metal);
+            box-shadow: 0 10px 20px rgba(247, 244, 35, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--color-morado-electrico);
+            box-shadow: 0 0 15px var(--color-morado-electrico);
+        }
+
+        .product-title {
+            color: var(--color-rosa-suave);
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-add-to-cart {
+            background-color: var(--color-rojo-sangre);
+            transition: all 0.3s ease;
+        }
+
+        .btn-add-to-cart:hover {
+            background-color: var(--color-morado-electrico);
+            box-shadow: 0 0 10px var(--color-rojo-sangre);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- HEADER (Estilo Fuerte) --><header class="bg-[--color-gris-asfalto] border-b-4 border-[--color-rojo-sangre] p-6 shadow-xl">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="header-title text-4xl sm:text-5xl text-white">LV VEGAS</h1> <!-- Nombre de la tienda --><!-- Íconos de Navegación --><div class="flex space-x-4 text-[--color-plata-metal]">
+                <a href="#" class="hover:text-[--color-rosa-suave] transition duration-200">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                </a>
+                <a href="#" class="hover:text-[--color-rosa-suave] transition duration-200">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- CUERPO PRINCIPAL --><main class="max-w-6xl mx-auto p-4 sm:p-8">
+        <h2 class="text-3xl sm:text-4xl text-center mb-10 mt-6 header-title">
+            WELCOME TO STREETS OF LV VEGAS
+        </h2>
+        
+        <!-- CUADRÍCULA DE PRODUCTOS --><div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Las tarjetas se insertarán aquí por JavaScript --></div>
+    </main>
+
+    <!-- FOOTER --><footer class="bg-[--color-gris-asfalto] p-6 mt-12 text-center border-t-2 border-[--color-plata-metal]">
+        <p class="text-[--color-plata-metal] text-sm">&copy; 2025 LV VEGAS. Todos los derechos reservados.</p>
+        <div class="mt-2 text-xs">
+            <a href="#" class="text-[--color-morado-electrico] hover:text-[--color-rosa-suave] mx-2">Términos y Condiciones</a>
+            <span class="text-[--color-plata-metal]">|</span>
+            <a href="#" class="text-[--color-morado-electrico] hover:text-[--color-rosa-suave] mx-2">Política de Privacidad</a>
+        </div>
+    </footer>
+
+    <script>
+        // Datos simulados de productos
+        const productos = [
+            { id: 1, nombre: "CHAQUETA DE CUERO VIPER", precio: 249.99, imagen: "https://placehold.co/300x400/333333/FFC0CB?text=CHAQUETA+VIPER", descripcion: "Cuero genuino, parches góticos. Estilo LV." },
+            { id: 2, nombre: "BOTAS PLATAFORMA PUNK", precio: 135.50, imagen: "https://placehold.co/300x400/8A2BE2/FFFFFF?text=BOTAS+PUNK", descripcion: "Suela gruesa, hebillas metálicas. Lista para Vegas." },
+            { id: 3, nombre: "TOP AJUSTADO ROJO SANGRE", precio: 45.00, imagen: "https://placehold.co/300x400/E60000/FFFFFF?text=TOP+CRUZADO", descripcion: "Lycra elástica, espalda cruzada. Atrae miradas." },
+            { id: 4, nombre: "JEANS DESTROZADOS GLITCH", precio: 89.99, imagen: "https://placehold.co/300x400/1A1A1A/B0B0B0?text=JEANS+DESTROY", descripcion: "Rodillas desgarradas, ajuste slim. Estilo urbano extremo." },
+            { id: 5, nombre: "MINIFALDA TARTÁN MORADO", precio: 59.00, imagen: "https://placehold.co/300x400/333333/8A2BE2?text=FALDA+MORADA", descripcion: "Cuadros escoceses con un toque morado eléctrico. Rebelde." },
+            { id: 6, nombre: "GUANTES SIN DEDOS METAL", precio: 30.00, imagen: "https://placehold.co/300x400/B0B0B0/1A1A1A?text=GUANTES+REJILLA", descripcion: "Malla y detalles de plata. Listos para el camino." },
+            { id: 7, nombre: "VESTIDO MALLA ROSA", precio: 75.00, imagen: "https://placehold.co/300x400/E60000/FFC0CB?text=VESTIDO+MALLA", descripcion: "Transparencias y encaje rosa suave. Dulce y atrevido." },
+            { id: 8, nombre: "CINTURÓN DE CADENAS", precio: 49.99, imagen: "https://placehold.co/300x400/1A1A1A/B0B0B0?text=CINTURON+CADENAS", descripcion: "Múltiples cadenas metálicas. El accesorio esencial." }
+        ];
+
+        /**
+         * Genera el HTML para una sola tarjeta de producto.
+         */
+        function createProductCard(producto) {
+            return `
+                <div class="product-card bg-[--color-gris-asfalto] rounded-lg overflow-hidden flex flex-col p-4">
+                    <img 
+                        src="${producto.imagen}" 
+                        alt="${producto.nombre}" 
+                        class="w-full h-80 object-cover rounded-md mb-4"
+                        onerror="this.onerror=null; this.src='https://placehold.co/300x400/1A1A1A/FFC0CB?text=Imagen+No+Disp.'"
+                    >
+                    <div class="flex-grow">
+                        <h3 class="product-title text-xl font-bold uppercase mb-1">${producto.nombre}</h3>
+                        <p class="text-[--color-plata-metal] text-sm mb-3">${producto.descripcion}</p>
+                    </div>
+                    
+                    <div class="mt-auto pt-4 border-t border-[--color-plata-metal] flex justify-between items-center">
+                        <span class="text-3xl font-extrabold text-[--color-plata-metal]">$${producto.precio.toFixed(2)}</span>
+                        <button class="btn-add-to-cart text-white font-bold py-2 px-4 rounded-full uppercase text-sm">
+                            Comprar
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Renderiza todos los productos en la cuadrícula.
+         */
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            if (grid) {
+                grid.innerHTML = productos.map(createProductCard).join('');
+            }
+        }
+
+        // Llama a la función al cargar la página
+        window.onload = renderProducts;
+
+    </script>
+</body>
 </html>
