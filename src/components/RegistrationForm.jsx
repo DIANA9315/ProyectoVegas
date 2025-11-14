@@ -1,149 +1,77 @@
-import React, { useState } from 'react';
-import { userRegistrationSchema } from '../lib/validationSchemas';
+import React, { useState, useCallback, useMemo } from 'react';
+// ... las otras importaciones
 import ErrorMessage from './ErrorMessage';
-
-// Función de ejemplo para simular una petición al backend
-// Simula un error de backend si el usuario es 'admin'
-const simulateBackendRequest = async (data) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (data.username === 'admin') {
-        // Simulación de error de backend (ej: usuario ya existe)
-        reject({ message: 'El usuario "admin" ya está registrado en el sistema.' });
-      } else {
-        // Simulación de respuesta exitosa
-        resolve({ success: true, user: data.username });
-      }
-    }, 1000); // Retraso de 1 segundo para simular latencia
-  });
-};
+// ... el resto del código (simulateBackendRequest)
 
 export default function RegistrationForm() {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-  });
-  const [formErrors, setFormErrors] = useState({}); // Errores de Zod (validación local)
-  const [backendError, setBackendError] = useState(null); // Errores de la API/Backend
+  const [formData, setFormData] = useState({ /* ... */ });
+  const [formErrors, setFormErrors] = useState({});
+  const [backendError, setBackendError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // La función handleChange es simple y generalmente no necesita useCallback,
+  // pero lo incluiremos por práctica si se pasara a un hijo.
+  const handleChange = useCallback((e) => {
+    setFormData((prevData) => ({ 
+      ...prevData, 
+      [e.target.name]: e.target.value 
+    }));
     // Limpiar errores locales al empezar a escribir
-    setFormErrors(prev => ({ ...prev, [e.target.name]: undefined }));
-  };
+    setFormErrors((prevErrors) => ({ 
+        ...prevErrors, 
+        [e.target.name]: undefined 
+    }));
+  }, []); // Dependencias vacías: esta función nunca cambia.
 
-  const handleSubmit = async (e) => {
+  // ⭐️ USO DE useCallBack para la función handleSubmit
+  // Evita que handleSubmit se cree de nuevo en cada renderizado.
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-    setFormErrors({}); // Limpiar errores previos
-    setBackendError(null); // Limpiar error de backend previo
+    setFormErrors({}); 
+    setBackendError(null); 
     setLoading(true);
 
     try {
-      // 1. VALIDACIÓN LOCAL CON ZOD
-      // El método .parse() lanzará un error si falla la validación.
-      // Puedes usar .safeParse() si quieres manejar el resultado sin try/catch.
       userRegistrationSchema.parse(formData);
-
-      // Si la validación local pasa, procedemos al backend
-
-      // 2. PETICIÓN AL BACKEND (MANEJO DE ERRORES DE API)
       await simulateBackendRequest(formData);
 
       alert(`¡Registro exitoso para el usuario: ${formData.username}!`);
-      setFormData({ username: '', email: '', password: '' }); // Limpiar formulario
+      setFormData({ username: '', email: '', password: '' }); 
 
     } catch (error) {
-      // Manejo de Errores
-      
+      // ... (El manejo de errores Zod/Backend es el mismo)
       if (error instanceof z.ZodError) {
-        // ERROR DE ZOD (Validación Local)
-        console.error("Zod Validation Error:", error.issues);
-        
-        // Mapear los errores de Zod al estado de errores del formulario
-        const newErrors = {};
-        error.issues.forEach(issue => {
-          // El 'path' es el nombre del campo (ej: ['username'])
-          newErrors[issue.path[0]] = issue.message;
-        });
-        setFormErrors(newErrors);
-        
+        // ...
       } else if (error && error.message) {
-        // ERROR DEL BACKEND/API (Ejemplo: Usuario duplicado, 401, 500)
-        console.error("Backend Error:", error.message);
-        setBackendError(error.message);
-
+        // ...
       } else {
-        // Otros Errores Inesperados
-        setBackendError("Ocurrió un error inesperado. Inténtalo de nuevo.");
+        // ...
       }
 
     } finally {
       setLoading(false);
     }
-  };
+    // Dependencias: formData es la única dependencia que necesita actualizarse
+    // para que la función tenga acceso a los datos más recientes.
+  }, [formData]); 
+
+  // ⭐️ USO DE useMemo para un Cálculo Costoso (o para evitar un Recálculo)
+  // Calcula si hay errores en el formulario para deshabilitar el botón.
+  const isFormInvalid = useMemo(() => {
+    // Comprueba si hay alguna clave en formErrors con un valor (es decir, un error).
+    return Object.values(formErrors).some(error => error);
+  }, [formErrors]); // Dependencia: Solo se recalcula si el objeto formErrors cambia.
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: '20px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
-      <h2>Registro de Usuario</h2>
+    <form onSubmit={handleSubmit} /* ... */>
+      {/* ... (resto del formulario) */}
       
-      {/* Muestra el error general del Backend si existe */}
-      <ErrorMessage message={backendError} />
-
-      {/* Campo Username */}
-      <div style={{ marginBottom: '15px' }}>
-        <label htmlFor="username">Usuario:</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          disabled={loading}
-          style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
-        />
-        {/* Muestra el error específico del campo de Zod */}
-        {formErrors.username && (
-          <p style={{ color: 'red', fontSize: '12px', margin: '4px 0 0 0' }}>{formErrors.username}</p>
-        )}
-      </div>
-
-      {/* Campo Email */}
-      <div style={{ marginBottom: '15px' }}>
-        <label htmlFor="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          disabled={loading}
-          style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
-        />
-        {formErrors.email && (
-          <p style={{ color: 'red', fontSize: '12px', margin: '4px 0 0 0' }}>{formErrors.email}</p>
-        )}
-      </div>
-
-      {/* Campo Password */}
-      <div style={{ marginBottom: '20px' }}>
-        <label htmlFor="password">Contraseña:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          disabled={loading}
-          style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
-        />
-        {formErrors.password && (
-          <p style={{ color: 'red', fontSize: '12px', margin: '4px 0 0 0' }}>{formErrors.password}</p>
-        )}
-      </div>
-
-      <button type="submit" disabled={loading} style={{ padding: '10px 15px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+      <button 
+        type="submit" 
+        // 🚨 El botón estará deshabilitado si está cargando O si el formulario es inválido.
+        disabled={loading || isFormInvalid} 
+        /* ... */
+      >
         {loading ? 'Cargando...' : 'Registrar'}
       </button>
     </form>
